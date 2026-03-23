@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BCS Fuel Coverage — Service Areas CT · NY · NJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050505;
+    --deep: #0d0d0d;
+    --panel: #111111;
+    --amber: #F5A320;
+    --orange: #FF6200;
+    --green: #4ade80;
+    --white: #F5F0E8;
+    --gray: #888880;
+    --lgray: #CCCCCC;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-cond: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+    --ct: #F5A320;
+    --ny: #FF6200;
+    --nj: #e84393;
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--black); color:var(--white); font-family:var(--font-body); overflow-x:hidden; }
+
+  /* CURSOR */
+  .cursor { width:12px;height:12px;background:var(--amber);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:difference; }
+  .cursor-ring { width:36px;height:36px;border:1.5px solid var(--amber);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:transform 0.4s cubic-bezier(.23,1,.32,1);mix-blend-mode:difference; }
+
+  /* NAV */
+  nav { position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:1.4rem 4rem;transition:background 0.4s,padding 0.4s; }
+  nav.scrolled { background:rgba(5,5,5,0.95);backdrop-filter:blur(12px);padding:1rem 4rem;border-bottom:1px solid rgba(245,163,32,0.15); }
+  .nav-logo { font-family:var(--font-display);font-size:2rem;letter-spacing:0.08em;color:var(--white);text-decoration:none; }
+  .nav-logo span { color:var(--amber); }
+  .nav-links { display:flex;gap:2.5rem;list-style:none; }
+  .nav-links a { font-family:var(--font-cond);font-size:0.95rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--lgray);text-decoration:none;transition:color 0.2s; }
+  .nav-links a:hover,.nav-links a.active { color:var(--amber); }
+  .nav-cta { font-family:var(--font-cond);font-size:0.9rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.65rem 1.8rem;background:var(--amber);color:var(--black);font-weight:700;border:none;cursor:pointer;text-decoration:none;transition:background 0.2s,transform 0.15s; }
+  .nav-cta:hover { background:var(--orange);transform:translateY(-1px); }
+
+  /* HERO */
+  #hero { position:relative;min-height:55vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8rem 4rem 4rem;overflow:hidden; }
+  .hero-bg { position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(245,163,32,0.07) 0%,transparent 65%),var(--black); }
+  .hero-grid-lines { position:absolute;inset:0;background-image:linear-gradient(rgba(245,163,32,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,163,32,0.03) 1px,transparent 1px);background-size:60px 60px; }
+  .hero-tag { font-family:var(--font-cond);font-size:0.8rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--amber);margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s 0.2s forwards; }
+  .hero-title { font-family:var(--font-display);font-size:clamp(4rem,10vw,10rem);line-height:0.88;opacity:0;animation:fadeUp 0.9s 0.4s forwards;position:relative;z-index:2; }
+  .hero-title .outline { -webkit-text-stroke:1px rgba(245,163,32,0.4);color:transparent; }
+  .hero-sub { font-family:var(--font-cond);font-size:1.2rem;font-weight:300;color:var(--lgray);max-width:560px;margin-top:1.5rem;line-height:1.65;opacity:0;animation:fadeUp 0.9s 0.65s forwards; }
+
+  /* STATE TABS */
+  .state-tabs { display:flex;gap:0;justify-content:center;margin-top:2.5rem;opacity:0;animation:fadeUp 0.9s 0.85s forwards; }
+  .state-tab { font-family:var(--font-display);font-size:1.8rem;letter-spacing:0.05em;padding:0.6rem 2.5rem;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden; }
+  .state-tab::before { content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.3s; }
+  .state-tab.ct::before { background:rgba(245,163,32,0.12); }
+  .state-tab.ny::before { background:rgba(255,98,0,0.12); }
+  .state-tab.nj::before { background:rgba(232,67,147,0.12); }
+  .state-tab.active::before,.state-tab:hover::before { opacity:1; }
+  .state-tab.ct { color:var(--ct);border-color:rgba(245,163,32,0.3); }
+  .state-tab.ny { color:var(--ny);border-color:rgba(255,98,0,0.3); }
+  .state-tab.nj { color:var(--nj);border-color:rgba(232,67,147,0.3); }
+  .state-tab.active.ct { border-color:var(--ct);box-shadow:0 0 20px rgba(245,163,32,0.2); }
+  .state-tab.active.ny { border-color:var(--ny);box-shadow:0 0 20px rgba(255,98,0,0.2); }
+  .state-tab.active.nj { border-color:var(--nj);box-shadow:0 0 20px rgba(232,67,147,0.2); }
+
+  /* MAP SECTION */
+  #map-section { padding:4rem;display:grid;grid-template-columns:1fr 380px;gap:3rem;align-items:start;min-height:80vh; }
+
+  /* MAP CANVAS AREA */
+  .map-wrap { position:relative;background:var(--panel);border:1px solid rgba(245,163,32,0.1);overflow:hidden; }
+  .map-wrap::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(245,163,32,0.03) 0%,transparent 70%);pointer-events:none;z-index:1; }
+  #coverageMap { display:block;width:100%;height:580px; }
+  .map-legend { position:absolute;bottom:1.5rem;left:1.5rem;z-index:10;display:flex;flex-direction:column;gap:0.6rem; }
+  .legend-item { display:flex;align-items:center;gap:0.7rem;font-family:var(--font-cond);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--lgray);background:rgba(5,5,5,0.85);padding:0.4rem 0.8rem;backdrop-filter:blur(6px); }
+  .legend-dot { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
+  .map-zoom { position:absolute;bottom:1.5rem;right:1.5rem;z-index:10;display:flex;flex-direction:column;gap:0.3rem; }
+  .zoom-btn { width:36px;height:36px;background:rgba(5,5,5,0.85);border:1px solid rgba(245,163,32,0.3);color:var(--amber);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;backdrop-filter:blur(6px); }
+  .zoom-btn:hover { background:rgba(245,163,32,0.1); }
+  .map-overlay-label { position:absolute;top:1.5rem;left:1.5rem;z-index:10;font-family:var(--font-cond);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);background:rgba(5,5,5,0.85);padding:0.4rem 0.9rem;backdrop-filter:blur(6px); }
+  .pulse-dot { position:absolute;z-index:8;pointer-events:none; }
+  .pulse-dot .ring { position:absolute;width:16px;height:16px;border-radius:50%;border:2px solid;transform:translate(-50%,-50%);animation:pulsering 2s ease-out infinite; }
+  .pulse-dot .core { position:absolute;width:8px;height:8px;border-radius:50%;transform:translate(-50%,-50%); }
+
+  /* SIDEBAR */
+  .map-sidebar { display:flex;flex-direction:column;gap:1.5rem; }
+  .sidebar-state { border:1px solid rgba(255,255,255,0.07);overflow:hidden;transition:border-color 0.3s; }
+  .sidebar-state.active-ct { border-color:rgba(245,163,32,0.4); }
+  .sidebar-state.active-ny { border-color:rgba(255,98,0,0.4); }
+  .sidebar-state.active-nj { border-color:rgba(232,67,147,0.4); }
+  .ss-header { padding:1.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background 0.3s; }
+  .ss-header:hover { background:rgba(255,255,255,0.02); }
+  .ss-title { display:flex;align-items:center;gap:1rem; }
+  .ss-flag { font-family:var(--font-display);font-size:2rem;line-height:1; }
+  .ss-flag.ct { color:var(--ct); }
+  .ss-flag.ny { color:var(--ny); }
+  .ss-flag.nj { color:var(--nj); }
+  .ss-name { font-family:var(--font-cond);font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em; }
+  .ss-status { font-size:0.65rem;letter-spacing:0.15em;color:var(--green);text-transform:uppercase;font-family:var(--font-cond);display:flex;align-items:center;gap:0.4rem; }
+  .ss-dot { width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 1.5s infinite; }
+  .ss-toggle { color:var(--gray);font-size:1.1rem;transition:transform 0.3s; }
+  .sidebar-state.open .ss-toggle { transform:rotate(180deg); }
+  .ss-body { max-height:0;overflow:hidden;transition:max-height 0.4s ease; }
+  .sidebar-state.open .ss-body { max-height:600px; }
+  .ss-content { padding:0 1.5rem 1.5rem; }
+  .ss-stat-row { display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1.2rem; }
+  .ss-stat { background:var(--deep);padding:0.8rem;text-align:center; }
+  .ss-stat .num { font-family:var(--font-display);font-size:1.4rem;display:block; }
+  .ss-stat .lbl { font-family:var(--font-cond);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray); }
+  .ss-stat.ct .num { color:var(--ct); }
+  .ss-stat.ny .num { color:var(--ny); }
+  .ss-stat.nj .num { color:var(--nj); }
+  .ss-zones-label { font-family:var(--font-cond);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);margin-bottom:0.6rem; }
+  .ss-zones { display:flex;flex-wrap:wrap;gap:0.4rem; }
+  .ss-zone-tag { font-family:var(--font-cond);font-size:0.72rem;letter-spacing:0.08em;padding:0.2rem 0.6rem;border:1px solid;transition:background 0.2s;cursor:default; }
+  .ss-zone-tag.ct { color:var(--ct);border-color:rgba(245,163,32,0.3); }
+  .ss-zone-tag.ct:hover { background:rgba(245,163,32,0.08); }
+  .ss-zone-tag.ny { color:var(--ny);border-color:rgba(255,98,0,0.3); }
+  .ss-zone-tag.ny:hover { background:rgba(255,98,0,0.08); }
+  .ss-zone-tag.nj { color:var(--nj);border-color:rgba(232,67,147,0.3); }
+  .ss-zone-tag.nj:hover { background:rgba(232,67,147,0.08); }
+  .ss-tax { margin-top:1rem;padding:0.8rem;border-left:2px solid;font-family:var(--font-cond);font-size:0.85rem; }
+  .ss-tax.ct { border-color:var(--ct); }
+  .ss-tax.ny { border-color:var(--ny); }
+  .ss-tax.nj { border-color:var(--nj); }
+  .ss-tax .label { font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray);display:block;margin-bottom:0.2rem; }
+
+  /* COMING SOON STATES */
+  #coming { padding:6rem 4rem;background:var(--deep);position:relative;overflow:hidden; }
+  #coming::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse 40% 50% at 100% 50%,rgba(245,163,32,0.04) 0%,transparent 60%); }
+  .coming-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.05);margin-top:4rem; }
+  .coming-card { background:var(--deep);padding:2.5rem 2rem;position:relative;overflow:hidden; }
+  .cc-state { font-family:var(--font-display);font-size:3.5rem;color:rgba(255,255,255,0.08);line-height:1;margin-bottom:0.5rem; }
+  .cc-name { font-family:var(--font-cond);font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem; }
+  .cc-year { font-family:var(--font-cond);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);padding:0.25rem 0.6rem;border:1px solid rgba(255,255,255,0.1);display:inline-block;margin-bottom:1rem; }
+  .cc-desc { font-size:0.85rem;color:var(--gray);line-height:1.6; }
+
+  /* STATS BAR */
+  #stats-bar { background:var(--amber);padding:2.5rem 4rem;display:grid;grid-template-columns:repeat(5,1fr);gap:0; }
+  .sb-item { text-align:center;border-right:1px solid rgba(0,0,0,0.12);padding:0 1rem; }
+  .sb-item:last-child { border-right:none; }
+  .sb-num { font-family:var(--font-display);font-size:2.5rem;color:var(--black);display:block;line-height:1; }
+  .sb-label { font-family:var(--font-cond);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(0,0,0,0.55); }
+
+  /* CTA */
+  #cta { padding:8rem 4rem;text-align:center;position:relative;overflow:hidden; }
+  .cta-bg { position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(255,98,0,0.1) 0%,transparent 65%); }
+  .cta-title { font-family:var(--font-display);font-size:clamp(3rem,8vw,8rem);line-height:0.9;position:relative;z-index:1;margin-bottom:1.5rem; }
+  .cta-title span { color:var(--amber); }
+  .cta-sub { font-family:var(--font-cond);font-size:1.15rem;color:var(--gray);max-width:500px;margin:0 auto 3rem;line-height:1.6;position:relative;z-index:1; }
+  .cta-btns { display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:1; }
+  .btn-primary { font-family:var(--font-cond);font-size:1rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;padding:1rem 2.8rem;background:linear-gradient(135deg,var(--amber),var(--orange));color:var(--black);border:none;cursor:pointer;text-decoration:none;position:relative;overflow:hidden;display:inline-block;transition:transform 0.2s; }
+  .btn-primary::after { content:'';position:absolute;inset:0;background:rgba(255,255,255,0.15);transform:translateX(-100%) skewX(-15deg);transition:transform 0.4s; }
+  .btn-primary:hover::after { transform:translateX(100%) skewX(-15deg); }
+  .btn-primary:hover { transform:translateY(-2px); }
+  .btn-outline { font-family:var(--font-cond);font-size:1rem;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;padding:1rem 2.8rem;border:1px solid rgba(245,163,32,0.5);color:var(--amber);background:transparent;cursor:pointer;text-decoration:none;display:inline-block;transition:border-color 0.2s,background 0.2s; }
+  .btn-outline:hover { border-color:var(--amber);background:rgba(245,163,32,0.08); }
+
+  /* SECTION COMMONS */
+  .section-label { font-family:var(--font-cond);font-size:0.75rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem;display:block; }
+  .section-title { font-family:var(--font-display);font-size:clamp(2.5rem,5vw,5rem);line-height:0.92; }
+
+  /* REVEAL */
+  .reveal { opacity:0;transform:translateY(30px);transition:opacity 0.7s,transform 0.7s; }
+  .reveal.visible { opacity:1;transform:translateY(0); }
+  .d1{transition-delay:0.1s;}.d2{transition-delay:0.2s;}.d3{transition-delay:0.3s;}
+
+  /* FOOTER */
+  footer { background:var(--black);border-top:1px solid rgba(245,163,32,0.12);padding:4rem 4rem 2.5rem; }
+  .footer-inner { display:flex;justify-content:space-between;align-items:flex-start;gap:3rem;flex-wrap:wrap;margin-bottom:3rem; }
+  .footer-logo { font-family:var(--font-display);font-size:2rem;color:var(--white); }
+  .footer-logo span { color:var(--amber); }
+  .footer-nav { display:flex;gap:4rem;flex-wrap:wrap; }
+  .footer-nav-col h4 { font-family:var(--font-cond);font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--amber);margin-bottom:1.2rem; }
+  .footer-nav-col ul { list-style:none;display:flex;flex-direction:column;gap:0.7rem; }
+  .footer-nav-col ul a { font-size:0.88rem;color:var(--gray);text-decoration:none;transition:color 0.2s; }
+  .footer-nav-col ul a:hover { color:var(--white); }
+  .footer-bottom { display:flex;justify-content:space-between;align-items:center;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem; }
+  .footer-bottom p { font-family:var(--font-cond);font-size:0.8rem;letter-spacing:0.08em;color:var(--gray); }
+
+  /* KEYFRAMES */
+  @keyframes fadeUp { to { opacity:1;transform:translateY(0); } }
+  @keyframes blink { 0%,100%{opacity:1;}50%{opacity:0.4;} }
+  @keyframes pulsering { 0%{transform:translate(-50%,-50%) scale(0.5);opacity:1;} 100%{transform:translate(-50%,-50%) scale(2.5);opacity:0;} }
+  @keyframes drawPath { from{stroke-dashoffset:3000;} to{stroke-dashoffset:0;} }
+
+  /* RESPONSIVE */
+  @media(max-width:1000px) {
+    nav { padding:1.2rem 2rem; } nav.scrolled { padding:0.9rem 2rem; } .nav-links { display:none; }
+    #map-section { grid-template-columns:1fr;padding:2rem; }
+    #coverageMap { height:400px; }
+    .coming-grid { grid-template-columns:1fr 1fr; }
+    #stats-bar { grid-template-columns:1fr 1fr;padding:2rem; }
+    .sb-item { padding:1rem;border-right:none;border-bottom:1px solid rgba(0,0,0,0.12); }
+    #coming,#cta { padding:5rem 2rem; }
+    footer { padding:3rem 2rem 2rem; }
+    .state-tabs { flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">BCS <span>FUEL</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="fleet.html">Fleet</a></li>
+    <li><a href="drivers.html">Drive With Us</a></li>
+    <li><a href="coverage.html" class="active">Coverage</a></li>
+    <li><a href="launch.html">Launch</a></li>
+  </ul>
+  <a href="index.html#cta" class="nav-cta">Get The App</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-tag">📍 Real-Time Coverage Map — Updated Continuously</div>
+  <h1 class="hero-title">WE DELIVER<br><span class="outline">EVERYWHERE.</span></h1>
+  <p class="hero-sub">BCS Fuel covers Connecticut, New York, and New Jersey — over 30 million people, millions of vehicles, and the densest fuel market in North America.</p>
+  <div class="state-tabs">
+    <div class="state-tab ct active" onclick="selectState('ct')">CT</div>
+    <div class="state-tab ny" onclick="selectState('ny')">NY</div>
+    <div class="state-tab nj" onclick="selectState('nj')">NJ</div>
+    <div class="state-tab" style="color:var(--gray);cursor:default;border-color:rgba(255,255,255,0.08);" title="Coming Soon">PA</div>
+    <div class="state-tab" style="color:var(--gray);cursor:default;border-color:rgba(255,255,255,0.08);" title="Coming Soon">MA</div>
+  </div>
+</section>
+
+<!-- MAP + SIDEBAR -->
+<div id="map-section">
+
+  <!-- SVG MAP -->
+  <div class="map-wrap">
+    <div class="map-overlay-label">BCS Fuel · Live Coverage Zones</div>
+    <svg id="coverageMap" viewBox="0 0 900 580" xmlns="http://www.w3.org/2000/svg" style="background:#090909;">
+      <defs>
+        <filter id="glow-ct">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-ny">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-nj">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(245,163,32,0.04)" stroke-width="0.5"/>
+        </pattern>
+        <linearGradient id="ct-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#F5A320;stop-opacity:0.35"/>
+          <stop offset="100%" style="stop-color:#FF6200;stop-opacity:0.15"/>
+        </linearGradient>
+        <linearGradient id="ny-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#FF6200;stop-opacity:0.35"/>
+          <stop offset="100%" style="stop-color:#D93B00;stop-opacity:0.15"/>
+        </linearGradient>
+        <linearGradient id="nj-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#e84393;stop-opacity:0.35"/>
+          <stop offset="100%" style="stop-color:#a0195c;stop-opacity:0.15"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Grid bg -->
+      <rect width="900" height="580" fill="url(#grid)"/>
+
+      <!-- Ocean/water suggestion -->
+      <ellipse cx="820" cy="350" rx="120" ry="280" fill="rgba(30,60,120,0.08)"/>
+      <ellipse cx="850" cy="280" rx="80" ry="200" fill="rgba(30,60,120,0.06)"/>
+
+      <!-- NEW YORK STATE (big, upper-left dominant) -->
+      <path id="ny-shape"
+        d="M 60 40 L 580 40 L 600 80 L 620 120 L 610 160 L 640 190 L 660 230 L 630 255 L 600 250 L 570 270 L 550 300 L 520 310 L 500 295 L 480 310 L 460 305 L 450 320 L 430 315 L 420 330 L 390 340 L 380 360 L 360 355 L 340 370 L 310 365 L 290 380 L 260 370 L 250 385 L 230 380 L 210 390 L 180 370 L 160 360 L 140 380 L 120 370 L 100 380 L 80 360 L 70 330 L 60 300 Z"
+        fill="url(#ny-grad)" stroke="#FF6200" stroke-width="1.5" stroke-opacity="0.6"
+        class="state-shape ny-shape" style="cursor:pointer;" onclick="selectState('ny')"
+        filter="url(#glow-ny)"/>
+
+      <!-- CONNECTICUT (middle, horizontal band) -->
+      <path id="ct-shape"
+        d="M 390 340 L 420 330 L 430 315 L 450 320 L 460 305 L 480 310 L 500 295 L 520 310 L 550 300 L 570 270 L 600 250 L 610 260 L 615 290 L 605 320 L 595 345 L 575 360 L 560 375 L 540 385 L 510 390 L 490 400 L 470 405 L 450 400 L 430 390 L 410 380 L 395 365 Z"
+        fill="url(#ct-grad)" stroke="#F5A320" stroke-width="1.5" stroke-opacity="0.8"
+        class="state-shape ct-shape" style="cursor:pointer;" onclick="selectState('ct')"
+        filter="url(#glow-ct)"/>
+
+      <!-- NEW JERSEY (right side, narrower) -->
+      <path id="nj-shape"
+        d="M 590 310 L 610 260 L 630 255 L 660 230 L 680 260 L 700 295 L 710 330 L 700 365 L 690 395 L 675 420 L 660 445 L 645 465 L 625 475 L 610 460 L 600 440 L 590 415 L 580 390 L 580 365 L 590 345 Z"
+        fill="url(#nj-grad)" stroke="#e84393" stroke-width="1.5" stroke-opacity="0.7"
+        class="state-shape nj-shape" style="cursor:pointer;" onclick="selectState('nj')"
+        filter="url(#glow-nj)"/>
+
+      <!-- NEARBY GRAYED STATES -->
+      <!-- Pennsylvania (suggestion) -->
+      <path d="M 60 300 L 80 360 L 100 380 L 120 370 L 140 380 L 160 360 L 180 370 L 210 390 L 230 380 L 250 385 L 260 370 L 280 390 L 300 400 L 320 410 L 340 420 L 360 415 L 380 430 L 390 450 L 370 470 L 340 480 L 300 490 L 260 500 L 220 510 L 180 505 L 140 495 L 100 480 L 70 460 L 50 440 L 40 410 L 45 380 L 55 350 Z"
+        fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <text x="200" y="450" font-family="'Bebas Neue',sans-serif" font-size="18" fill="rgba(255,255,255,0.12)" letter-spacing="3">PENNSYLVANIA</text>
+      <text x="220" y="468" font-family="'Barlow Condensed',sans-serif" font-size="10" fill="rgba(255,255,255,0.08)" letter-spacing="2">COMING 2027</text>
+
+      <!-- Massachusetts suggestion -->
+      <path d="M 580 40 L 680 40 L 720 60 L 730 90 L 720 120 L 700 140 L 680 130 L 660 120 L 640 100 L 620 90 L 610 70 Z"
+        fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <text x="625" y="90" font-family="'Bebas Neue',sans-serif" font-size="14" fill="rgba(255,255,255,0.1)" letter-spacing="1">MA</text>
+
+      <!-- Delaware suggestion -->
+      <path d="M 610 460 L 625 475 L 630 500 L 618 520 L 605 510 L 598 490 L 600 470 Z"
+        fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <text x="595" y="500" font-family="'Bebas Neue',sans-serif" font-size="10" fill="rgba(255,255,255,0.1)" letter-spacing="1">DE</text>
+
+      <!-- State Labels -->
+      <text id="ny-label" x="280" y="200" font-family="'Bebas Neue',sans-serif" font-size="42" fill="#FF6200" fill-opacity="0.9" letter-spacing="4" filter="url(#glow-ny)">NEW YORK</text>
+      <text x="280" y="225" font-family="'Barlow Condensed',sans-serif" font-size="11" fill="rgba(255,98,0,0.6)" letter-spacing="4">● LIVE COVERAGE</text>
+
+      <text id="ct-label" x="445" y="355" font-family="'Bebas Neue',sans-serif" font-size="22" fill="#F5A320" fill-opacity="0.95" letter-spacing="3" filter="url(#glow-ct)">CONNECTICUT</text>
+      <text x="450" y="370" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(245,163,32,0.6)" letter-spacing="3">● LIVE</text>
+
+      <text id="nj-label" x="620" y="370" font-family="'Bebas Neue',sans-serif" font-size="16" fill="#e84393" fill-opacity="0.9" letter-spacing="2" filter="url(#glow-nj)">NEW</text>
+      <text x="618" y="388" font-family="'Bebas Neue',sans-serif" font-size="16" fill="#e84393" fill-opacity="0.9" letter-spacing="2">JERSEY</text>
+      <text x="616" y="402" font-family="'Barlow Condensed',sans-serif" font-size="8" fill="rgba(232,67,147,0.6)" letter-spacing="2">● LIVE</text>
+
+      <!-- City dots: CT -->
+      <g id="ct-cities">
+        <circle cx="540" cy="375" r="4" fill="#F5A320" opacity="0.9"/>
+        <text x="547" y="379" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(245,163,32,0.8)" letter-spacing="1">New Haven</text>
+        <circle cx="500" cy="385" r="3.5" fill="#F5A320" opacity="0.7"/>
+        <text x="507" y="389" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(245,163,32,0.7)">Bridgeport</text>
+        <circle cx="575" cy="362" r="3" fill="#F5A320" opacity="0.7"/>
+        <text x="582" y="366" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(245,163,32,0.6)">Stamford</text>
+        <circle cx="455" cy="360" r="3" fill="#F5A320" opacity="0.6"/>
+        <text x="428" y="358" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(245,163,32,0.6)">Hartford</text>
+        <circle cx="415" cy="352" r="2.5" fill="#F5A320" opacity="0.5"/>
+        <text x="395" y="348" font-family="'Barlow Condensed',sans-serif" font-size="8" fill="rgba(245,163,32,0.5)">Ansonia</text>
+      </g>
+
+      <!-- City dots: NY -->
+      <g id="ny-cities">
+        <circle cx="590" cy="290" r="6" fill="#FF6200" opacity="0.95"/>
+        <text x="598" y="294" font-family="'Barlow Condensed',sans-serif" font-size="11" fill="rgba(255,98,0,0.9)" font-weight="bold" letter-spacing="1">NEW YORK CITY</text>
+        <circle cx="300" cy="150" r="4" fill="#FF6200" opacity="0.7"/>
+        <text x="308" y="154" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(255,98,0,0.7)">Albany</text>
+        <circle cx="200" cy="200" r="3.5" fill="#FF6200" opacity="0.65"/>
+        <text x="208" y="204" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(255,98,0,0.65)">Syracuse</text>
+        <circle cx="500" cy="260" r="4" fill="#FF6200" opacity="0.7"/>
+        <text x="508" y="264" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(255,98,0,0.7)">White Plains</text>
+        <circle cx="450" cy="275" r="3.5" fill="#FF6200" opacity="0.7"/>
+        <text x="458" y="279" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(255,98,0,0.6)">Yonkers</text>
+        <circle cx="400" cy="240" r="3" fill="#FF6200" opacity="0.6"/>
+        <text x="408" y="244" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(255,98,0,0.6)">Poughkeepsie</text>
+      </g>
+
+      <!-- City dots: NJ -->
+      <g id="nj-cities">
+        <circle cx="638" cy="310" r="4" fill="#e84393" opacity="0.9"/>
+        <text x="645" y="314" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(232,67,147,0.85)">Newark</text>
+        <circle cx="628" cy="330" r="3.5" fill="#e84393" opacity="0.8"/>
+        <text x="635" y="334" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(232,67,147,0.75)">Jersey City</text>
+        <circle cx="648" cy="370" r="3" fill="#e84393" opacity="0.7"/>
+        <text x="655" y="374" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(232,67,147,0.65)">Edison</text>
+        <circle cx="640" cy="400" r="3" fill="#e84393" opacity="0.65"/>
+        <text x="647" y="404" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(232,67,147,0.6)">Trenton</text>
+      </g>
+
+      <!-- Animated delivery route lines -->
+      <path id="route1" d="M 590 290 Q 560 310 540 375" fill="none" stroke="rgba(245,163,32,0.3)" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <path id="route2" d="M 590 290 Q 615 300 638 310" fill="none" stroke="rgba(232,67,147,0.3)" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <path id="route3" d="M 590 290 Q 530 270 500 260" fill="none" stroke="rgba(255,98,0,0.25)" stroke-width="1.5" stroke-dasharray="6 4"/>
+
+      <!-- Moving delivery dots -->
+      <circle r="4" fill="#F5A320" opacity="0.9">
+        <animateMotion dur="4s" repeatCount="indefinite">
+          <mpath href="#route1"/>
+        </animateMotion>
+      </circle>
+      <circle r="4" fill="#e84393" opacity="0.9">
+        <animateMotion dur="5s" repeatCount="indefinite" begin="1s">
+          <mpath href="#route2"/>
+        </animateMotion>
+      </circle>
+      <circle r="4" fill="#FF6200" opacity="0.9">
+        <animateMotion dur="6s" repeatCount="indefinite" begin="2s">
+          <mpath href="#route3"/>
+        </animateMotion>
+      </circle>
+
+      <!-- Pulse rings on NYC hub -->
+      <circle cx="590" cy="290" r="12" fill="none" stroke="#FF6200" stroke-width="1" opacity="0">
+        <animate attributeName="r" from="6" to="28" dur="2.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.7" to="0" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="590" cy="290" r="12" fill="none" stroke="#FF6200" stroke-width="1" opacity="0">
+        <animate attributeName="r" from="6" to="28" dur="2.5s" begin="1.25s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.7" to="0" dur="2.5s" begin="1.25s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- Compass rose -->
+      <g transform="translate(840,60)">
+        <circle r="22" fill="rgba(0,0,0,0.5)" stroke="rgba(245,163,32,0.2)" stroke-width="1"/>
+        <text x="0" y="-10" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="10" fill="rgba(245,163,32,0.7)">N</text>
+        <text x="0" y="16" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="8" fill="rgba(255,255,255,0.3)">S</text>
+        <text x="14" y="5" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="8" fill="rgba(255,255,255,0.3)">E</text>
+        <text x="-14" y="5" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="8" fill="rgba(255,255,255,0.3)">W</text>
+        <line x1="0" y1="-18" x2="0" y2="-8" stroke="rgba(245,163,32,0.7)" stroke-width="1.5"/>
+      </g>
+
+      <!-- Scale bar -->
+      <g transform="translate(40,545)">
+        <line x1="0" y1="0" x2="80" y2="0" stroke="rgba(245,163,32,0.4)" stroke-width="1"/>
+        <line x1="0" y1="-4" x2="0" y2="4" stroke="rgba(245,163,32,0.4)" stroke-width="1"/>
+        <line x1="80" y1="-4" x2="80" y2="4" stroke="rgba(245,163,32,0.4)" stroke-width="1"/>
+        <text x="40" y="-7" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="rgba(245,163,32,0.5)" letter-spacing="1">~100 mi</text>
+      </g>
+    </svg>
+
+    <div class="map-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#F5A320;box-shadow:0 0 6px #F5A320;"></div>Connecticut · Live</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FF6200;box-shadow:0 0 6px #FF6200;"></div>New York · Live</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e84393;box-shadow:0 0 6px #e84393;"></div>New Jersey · Live</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#333;"></div>Coming Soon</div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="map-sidebar">
+
+    <!-- CT -->
+    <div class="sidebar-state open active-ct" id="ss-ct">
+      <div class="ss-header" onclick="toggleSidebar('ct')">
+        <div class="ss-title">
+          <span class="ss-flag ct">CT</span>
+          <div>
+            <div class="ss-name">Connecticut</div>
+            <div class="ss-status"><span class="ss-dot"></span>Live Coverage</div>
+          </div>
+        </div>
+        <span class="ss-toggle">▾</span>
+      </div>
+      <div class="ss-body">
+        <div class="ss-content">
+          <div class="ss-stat-row">
+            <div class="ss-stat ct"><span class="num">6.35%</span><span class="lbl">State Tax</span></div>
+            <div class="ss-stat ct"><span class="num">$12.99</span><span class="lbl">Delivery Fee</span></div>
+            <div class="ss-stat ct"><span class="num">10 gal</span><span class="lbl">Minimum</span></div>
+            <div class="ss-stat ct"><span class="num">24/7</span><span class="lbl">Hours</span></div>
+          </div>
+          <div class="ss-zones-label">Active Zones</div>
+          <div class="ss-zones">
+            <span class="ss-zone-tag ct">New Haven</span>
+            <span class="ss-zone-tag ct">Bridgeport</span>
+            <span class="ss-zone-tag ct">Stamford</span>
+            <span class="ss-zone-tag ct">Hartford</span>
+            <span class="ss-zone-tag ct">Waterbury</span>
+            <span class="ss-zone-tag ct">Ansonia</span>
+            <span class="ss-zone-tag ct">Norwalk</span>
+            <span class="ss-zone-tag ct">Danbury</span>
+            <span class="ss-zone-tag ct">Meriden</span>
+            <span class="ss-zone-tag ct">Milford</span>
+          </div>
+          <div class="ss-tax ct">
+            <span class="label">Fuel Types Available</span>
+            Regular · Midgrade · Premium · Diesel
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NY -->
+    <div class="sidebar-state" id="ss-ny">
+      <div class="ss-header" onclick="toggleSidebar('ny')">
+        <div class="ss-title">
+          <span class="ss-flag ny">NY</span>
+          <div>
+            <div class="ss-name">New York</div>
+            <div class="ss-status"><span class="ss-dot"></span>Live Coverage</div>
+          </div>
+        </div>
+        <span class="ss-toggle">▾</span>
+      </div>
+      <div class="ss-body">
+        <div class="ss-content">
+          <div class="ss-stat-row">
+            <div class="ss-stat ny"><span class="num">4.00%</span><span class="lbl">State Tax</span></div>
+            <div class="ss-stat ny"><span class="num">$12.99</span><span class="lbl">Delivery Fee</span></div>
+            <div class="ss-stat ny"><span class="num">10 gal</span><span class="lbl">Minimum</span></div>
+            <div class="ss-stat ny"><span class="num">24/7</span><span class="lbl">Hours</span></div>
+          </div>
+          <div class="ss-zones-label">Active Zones</div>
+          <div class="ss-zones">
+            <span class="ss-zone-tag ny">Manhattan</span>
+            <span class="ss-zone-tag ny">Brooklyn</span>
+            <span class="ss-zone-tag ny">Queens</span>
+            <span class="ss-zone-tag ny">The Bronx</span>
+            <span class="ss-zone-tag ny">Staten Island</span>
+            <span class="ss-zone-tag ny">Long Island</span>
+            <span class="ss-zone-tag ny">Westchester</span>
+            <span class="ss-zone-tag ny">Yonkers</span>
+            <span class="ss-zone-tag ny">White Plains</span>
+            <span class="ss-zone-tag ny">Hudson Valley</span>
+            <span class="ss-zone-tag ny">Albany Metro</span>
+            <span class="ss-zone-tag ny">Syracuse Metro</span>
+          </div>
+          <div class="ss-tax ny">
+            <span class="label">Fuel Types Available</span>
+            Regular · Midgrade · Premium · Diesel
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NJ -->
+    <div class="sidebar-state" id="ss-nj">
+      <div class="ss-header" onclick="toggleSidebar('nj')">
+        <div class="ss-title">
+          <span class="ss-flag nj">NJ</span>
+          <div>
+            <div class="ss-name">New Jersey</div>
+            <div class="ss-status"><span class="ss-dot"></span>Live Coverage</div>
+          </div>
+        </div>
+        <span class="ss-toggle">▾</span>
+      </div>
+      <div class="ss-body">
+        <div class="ss-content">
+          <div class="ss-stat-row">
+            <div class="ss-stat nj"><span class="num">6.625%</span><span class="lbl">State Tax</span></div>
+            <div class="ss-stat nj"><span class="num">$12.99</span><span class="lbl">Delivery Fee</span></div>
+            <div class="ss-stat nj"><span class="num">10 gal</span><span class="lbl">Minimum</span></div>
+            <div class="ss-stat nj"><span class="num">24/7</span><span class="lbl">Hours</span></div>
+          </div>
+          <div class="ss-zones-label">Active Zones</div>
+          <div class="ss-zones">
+            <span class="ss-zone-tag nj">Newark</span>
+            <span class="ss-zone-tag nj">Jersey City</span>
+            <span class="ss-zone-tag nj">Trenton</span>
+            <span class="ss-zone-tag nj">Edison</span>
+            <span class="ss-zone-tag nj">Paterson</span>
+            <span class="ss-zone-tag nj">Elizabeth</span>
+            <span class="ss-zone-tag nj">Camden</span>
+            <span class="ss-zone-tag nj">Atlantic City</span>
+            <span class="ss-zone-tag nj">Hoboken</span>
+            <span class="ss-zone-tag nj">Bayonne</span>
+          </div>
+          <div class="ss-tax nj">
+            <span class="label">Fuel Types Available</span>
+            Regular · Midgrade · Premium · Diesel
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div id="stats-bar">
+  <div class="sb-item"><span class="sb-num">30M+</span><span class="sb-label">People in Coverage Area</span></div>
+  <div class="sb-item"><span class="sb-num">3</span><span class="sb-label">States Live</span></div>
+  <div class="sb-item"><span class="sb-num">32+</span><span class="sb-label">Active City Zones</span></div>
+  <div class="sb-item"><span class="sb-num">&lt;60</span><span class="sb-label">Min Avg Delivery</span></div>
+  <div class="sb-item"><span class="sb-num">24/7</span><span class="sb-label">Coverage Hours</span></div>
+</div>
+
+<!-- COMING SOON -->
+<section id="coming">
+  <span class="section-label reveal">Expansion Roadmap</span>
+  <h2 class="section-title reveal">Growing<br>Fast.</h2>
+  <p class="reveal" style="color:var(--gray);font-size:0.95rem;line-height:1.7;max-width:500px;margin-top:1rem;">We're scaling the BCS Fuel network across the entire East Coast. Here's what's coming next.</p>
+  <div class="coming-grid">
+    <div class="coming-card reveal">
+      <div class="cc-state">PA</div>
+      <div class="cc-name">Pennsylvania</div>
+      <span class="cc-year">2027</span>
+      <p class="cc-desc">Philadelphia metro, Pittsburgh, and major corridors. Massive fleet opportunity in industrial PA.</p>
+    </div>
+    <div class="coming-card reveal d1">
+      <div class="cc-state">MA</div>
+      <div class="cc-name">Massachusetts</div>
+      <span class="cc-year">2027</span>
+      <p class="cc-desc">Boston, Worcester, and Eastern MA. High-income market with heavy commuter density.</p>
+    </div>
+    <div class="coming-card reveal d2">
+      <div class="cc-state">DE</div>
+      <div class="cc-name">Delaware</div>
+      <span class="cc-year">2027</span>
+      <p class="cc-desc">Small footprint, massive logistics volume. Natural bridge between NJ and MD markets.</p>
+    </div>
+    <div class="coming-card reveal d3">
+      <div class="cc-state">MD</div>
+      <div class="cc-name">Maryland</div>
+      <span class="cc-year">2028</span>
+      <p class="cc-desc">Baltimore, Annapolis, and the DC suburbs. Enormous government fleet and commercial opportunity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg"></div>
+  <span class="section-label reveal" style="display:block;text-align:center;">Available In Your Area Now</span>
+  <h2 class="cta-title reveal">IS YOUR CITY<br><span>COVERED?</span></h2>
+  <p class="cta-sub reveal">If you're in CT, NY, or NJ — you're in. Download the app and get fuel delivered to your exact location today.</p>
+  <div class="cta-btns reveal">
+    <a href="index.html#cta" class="btn-primary">Download The App →</a>
+    <a href="fleet.html" class="btn-outline">Fleet Solutions</a>
+    <a href="drivers.html" class="btn-outline">Become a Driver</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">BCS <span>FUEL</span></div>
+      <p style="font-size:0.85rem;color:var(--gray);margin-top:0.8rem;max-width:240px;line-height:1.6;">Big Country Solutions LLC — On-demand fuel delivery for businesses and individuals across the Northeast.</p>
+    </div>
+    <div class="footer-nav">
+      <div class="footer-nav-col">
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="fleet.html">Fleet Program</a></li>
+          <li><a href="drivers.html">Drive With Us</a></li>
+          <li><a href="launch.html">App Launch</a></li>
+        </ul>
+      </div>
+      <div class="footer-nav-col">
+        <h4>Coverage</h4>
+        <ul>
+          <li><a href="#ss-ct" onclick="selectState('ct')">Connecticut</a></li>
+          <li><a href="#ss-ny" onclick="selectState('ny')">New York</a></li>
+          <li><a href="#ss-nj" onclick="selectState('nj')">New Jersey</a></li>
+        </ul>
+      </div>
+      <div class="footer-nav-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="https://bigcountrysolutionsllc-collab.github.io/Big-country-Solutions-Privacy/" target="_blank">Privacy Policy</a></li>
+          <li><a href="https://bigcountrysolutionsllc-collab.github.io/Big-country-Solutions-Privacy/" target="_blank">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Big Country Solutions LLC. All rights reserved. BCS Fuel™</p>
+    <p style="color:rgba(245,163,32,0.5);font-family:var(--font-cond);letter-spacing:0.15em;">CT · NY · NJ</p>
+  </div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.transform=`translate(${mx-6}px,${my-6}px)`;});
+  function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.transform=`translate(${rx-18}px,${ry-18}px)`;requestAnimationFrame(animRing);}
+  animRing();
+
+  // Nav
+  const nav=document.getElementById('navbar');
+  window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+
+  // Reveal
+  const reveals=document.querySelectorAll('.reveal');
+  const obs=new IntersectionObserver(e=>e.forEach(r=>{if(r.isIntersecting)r.target.classList.add('visible');}),{threshold:0.1});
+  reveals.forEach(el=>obs.observe(el));
+
+  // State tab + sidebar sync
+  function selectState(state) {
+    // Tabs
+    document.querySelectorAll('.state-tab').forEach(t=>t.classList.remove('active'));
+    const tab = document.querySelector('.state-tab.'+state);
+    if(tab) tab.classList.add('active');
+
+    // Map highlight
+    document.querySelectorAll('.state-shape').forEach(s=>{
+      s.style.opacity = '0.3';
+    });
+    const shape = document.querySelector('.'+state+'-shape');
+    if(shape) shape.style.opacity = '1';
+
+    // Sidebar
+    ['ct','ny','nj'].forEach(s=>{
+      const ss = document.getElementById('ss-'+s);
+      ss.classList.remove('open','active-ct','active-ny','active-nj');
+    });
+    const ss = document.getElementById('ss-'+state);
+    ss.classList.add('open','active-'+state);
+    ss.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  function toggleSidebar(state) {
+    const ss = document.getElementById('ss-'+state);
+    const wasOpen = ss.classList.contains('open');
+    if(!wasOpen) selectState(state);
+    else ss.classList.remove('open');
+  }
+
+  // Init
+  selectState('ct');
+  // Reset to all visible after init highlight
+  setTimeout(()=>{
+    document.querySelectorAll('.state-shape').forEach(s=>s.style.opacity='1');
+  }, 100);
+</script>
+</body>
+</html>
